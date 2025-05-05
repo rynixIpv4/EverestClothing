@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary brand colors -->
+    <color name="colorPrimary">#84A98C</color>
+    <color name="colorPrimaryDark">#52796F</color>
+    <color name="colorAccent">#CAD2C5</color>
+    
+    <!-- Additional brand colors -->
+    <color name="colorSecondary">#354F52</color>
+    <color name="colorSecondaryLight">#2F3E46</color>
+    
+    <!-- Neutrals -->
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGray">#CCCCCC</color>
+    <color name="colorLightGray">#F5F5F5</color>
+    <color name="colorMediumGray">#9E9E9E</color>
+    <color name="colorDarkGray">#616161</color>
+    
+    <!-- Status colors -->
+    <color name="colorSuccess">#84A98C</color>
+    <color name="colorWarning">#F39C12</color>
+    <color name="colorError">#E74C3C</color>
+    <color name="colorInfo">#3498DB</color>
+    
+    <!-- Background colors -->
+    <color name="colorBackground">#F8F9FA</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorTransparent">#00000000</color>
+    
+    <!-- Text colors -->
+    <color name="textColorPrimary">#2F3E46</color>
+    <color name="textColorSecondary">#52796F</color>
+    <color name="textColorDisabled">#9E9E9E</color>
+    
+    <!-- Additional UI colors -->
+    <color name="colorBlue">#3498DB</color>
+    <color name="colorRed">#E74C3C</color>
+</resources>
