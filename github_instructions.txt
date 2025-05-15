@@ -1,0 +1,17 @@
+To push your existing EverestClothing repository to GitHub:
+
+1. Create a new repository on GitHub.com (do NOT initialize it with README, license, or .gitignore)
+
+2. After creating the repository, run these commands in your terminal (replace YOUR_USERNAME with your GitHub username):
+
+git remote add origin https://github.com/YOUR_USERNAME/EverestClothing.git
+git branch -M main
+git push -u origin main
+
+3. If you haven't authenticated with GitHub before, you'll be prompted to sign in.
+
+4. If you prefer to use SSH instead of HTTPS, you can use this command instead:
+git remote add origin git@github.com:YOUR_USERNAME/EverestClothing.git
+
+After successful push, you can verify your repository is available at:
+https://github.com/YOUR_USERNAME/EverestClothing 

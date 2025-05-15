@@ -41,6 +41,8 @@
     <string name="subtotal">Subtotal</string>
     <string name="item_price">Item Price</string>
     <string name="empty_cart">Your cart is empty</string>
+    <string name="please_login_to_view_cart">Please log in to view your cart</string>
+    <string name="your_cart_is_empty">Your cart is empty</string>
     <string name="orders">Orders</string>
     <string name="back">Back</string>
     <string name="processing">Processing</string>

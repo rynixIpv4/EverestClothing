@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.everestclothing.R;
 import com.example.everestclothing.activities.CheckoutActivity;
+import com.example.everestclothing.activities.LoginActivity;
 import com.example.everestclothing.adapters.CartAdapter;
 import com.example.everestclothing.database.DatabaseHelper;
 import com.example.everestclothing.models.CartItem;
 import com.example.everestclothing.utils.SessionManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +32,7 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterLis
     private TextView emptyCartMessage;
     private TextView totalPrice;
     private Button checkoutButton;
+    private Button loginButton;
     private CartAdapter adapter;
     private DatabaseHelper dbHelper;
     private SessionManager sessionManager;
@@ -49,22 +52,42 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterLis
         emptyCartMessage = view.findViewById(R.id.emptyCartMessage);
         totalPrice = view.findViewById(R.id.totalPrice);
         checkoutButton = view.findViewById(R.id.checkoutButton);
+        loginButton = view.findViewById(R.id.loginButton);
         
         // Set up RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         
-        // Load cart items
-        loadCartItems();
-        
-        // Set click listener for checkout button
-        checkoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (cartItems != null && !cartItems.isEmpty()) {
-                    startActivity(new Intent(getContext(), CheckoutActivity.class));
+        // Check if user is logged in
+        if (!sessionManager.isLoggedIn()) {
+            // Show login message and button
+            recyclerView.setVisibility(View.GONE);
+            emptyCartMessage.setText(R.string.please_login_to_view_cart);
+            emptyCartMessage.setVisibility(View.VISIBLE);
+            checkoutButton.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+            
+            loginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getContext(), LoginActivity.class));
                 }
-            }
-        });
+            });
+        } else {
+            // User is logged in, load cart items
+            checkoutButton.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.GONE);
+            loadCartItems();
+            
+            // Set click listener for checkout button
+            checkoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (cartItems != null && !cartItems.isEmpty()) {
+                        startActivity(new Intent(getContext(), CheckoutActivity.class));
+                    }
+                }
+            });
+        }
         
         return view;
     }
@@ -72,8 +95,19 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterLis
     @Override
     public void onResume() {
         super.onResume();
-        // Reload cart items when fragment resumes (e.g., after checkout)
-        loadCartItems();
+        // Check login status and reload cart items when fragment resumes
+        if (sessionManager.isLoggedIn()) {
+            checkoutButton.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.GONE);
+            loadCartItems();
+        } else {
+            // Show login message and button
+            recyclerView.setVisibility(View.GONE);
+            emptyCartMessage.setText(R.string.please_login_to_view_cart);
+            emptyCartMessage.setVisibility(View.VISIBLE);
+            checkoutButton.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+        }
     }
     
     private void loadCartItems() {
@@ -82,6 +116,7 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterLis
         
         if (cartItems.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
+            emptyCartMessage.setText(R.string.your_cart_is_empty);
             emptyCartMessage.setVisibility(View.VISIBLE);
             checkoutButton.setEnabled(false);
         } else {
@@ -117,6 +152,7 @@ public class CartFragment extends Fragment implements CartAdapter.CartAdapterLis
         // Check if cart is empty after item removal
         if (cartItems.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
+            emptyCartMessage.setText(R.string.your_cart_is_empty);
             emptyCartMessage.setVisibility(View.VISIBLE);
             checkoutButton.setEnabled(false);
         }

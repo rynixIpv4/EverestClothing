@@ -1,5 +1,6 @@
 package com.example.everestclothing.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -47,6 +48,14 @@ public class CheckoutActivity extends AppCompatActivity {
         // Initialize helpers
         dbHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
+        
+        // Check if user is logged in
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "Please login to checkout", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(CheckoutActivity.this, LoginActivity.class));
+            finish();
+            return;
+        }
         
         // Initialize views
         fullNameEditText = findViewById(R.id.fullNameEditText);

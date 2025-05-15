@@ -12,8 +12,12 @@
         <item name="colorControlNormal">@color/colorSecondary</item>
         
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
+        
+        <!-- Edge-to-edge support -->
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
         
         <!-- Background colors -->
         <item name="android:colorBackground">@color/colorBackground</item>

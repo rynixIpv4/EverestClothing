@@ -1,5 +1,6 @@
 package com.example.everestclothing.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -174,6 +175,15 @@ public class ProductDetailActivity extends AppCompatActivity {
     private void addToCart() {
         if (selectedSize.isEmpty()) {
             Toast.makeText(this, R.string.please_select_size, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Check if user is logged in
+        if (!sessionManager.isLoggedIn()) {
+            // Redirect to login activity
+            Toast.makeText(this, "Please login to add items to cart", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
             return;
         }
         
