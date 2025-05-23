@@ -21,12 +21,16 @@ import com.example.everestclothing.models.Order;
 import com.example.everestclothing.models.User;
 import com.example.everestclothing.utils.SessionManager;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 import java.util.Locale;
 
 public class CheckoutActivity extends AppCompatActivity {
 
+    private TextInputLayout fullNameLayout;
+    private TextInputLayout addressLayout;
+    private TextInputLayout phoneLayout;
     private TextInputEditText fullNameEditText;
     private TextInputEditText addressEditText;
     private TextInputEditText phoneEditText;
@@ -58,6 +62,9 @@ public class CheckoutActivity extends AppCompatActivity {
         }
         
         // Initialize views
+        fullNameLayout = findViewById(R.id.fullNameLayout);
+        addressLayout = findViewById(R.id.addressLayout);
+        phoneLayout = findViewById(R.id.phoneLayout);
         fullNameEditText = findViewById(R.id.fullNameEditText);
         addressEditText = findViewById(R.id.addressEditText);
         phoneEditText = findViewById(R.id.phoneEditText);
@@ -110,10 +117,12 @@ public class CheckoutActivity extends AppCompatActivity {
     }
     
     private void setupUserInfo() {
+        // Try to get user info from the database to ensure we have the latest data
         long userId = sessionManager.getUserId();
         User user = dbHelper.getUser(userId);
         
         if (user != null) {
+            // Populate form fields with user information if available
             if (!TextUtils.isEmpty(user.getFullName())) {
                 fullNameEditText.setText(user.getFullName());
             }
@@ -143,21 +152,27 @@ public class CheckoutActivity extends AppCompatActivity {
         
         // Validate inputs
         if (TextUtils.isEmpty(fullName)) {
-            fullNameEditText.setError("Full name is required");
+            fullNameLayout.setError("Full name is required");
             return;
+        } else {
+            fullNameLayout.setError(null);
         }
         
         if (TextUtils.isEmpty(address)) {
-            addressEditText.setError("Address is required");
+            addressLayout.setError("Address is required");
             return;
+        } else {
+            addressLayout.setError(null);
         }
         
         if (TextUtils.isEmpty(phone)) {
-            phoneEditText.setError("Phone number is required");
+            phoneLayout.setError("Phone number is required");
             return;
+        } else {
+            phoneLayout.setError(null);
         }
         
-        // Update user information
+        // Update user information in database and session
         updateUserInfo(fullName, address, phone);
         
         // Create order
@@ -169,6 +184,11 @@ public class CheckoutActivity extends AppCompatActivity {
         
         if (orderId != -1) {
             Toast.makeText(this, "Order placed successfully", Toast.LENGTH_SHORT).show();
+            
+            // Navigate to order detail page
+            Intent intent = new Intent(this, OrderDetailActivity.class);
+            intent.putExtra(OrderDetailActivity.EXTRA_ORDER_ID, orderId);
+            startActivity(intent);
             finish();
         } else {
             Toast.makeText(this, "Failed to place order", Toast.LENGTH_SHORT).show();
@@ -180,10 +200,18 @@ public class CheckoutActivity extends AppCompatActivity {
         User user = dbHelper.getUser(userId);
         
         if (user != null) {
+            // Update user model
             user.setFullName(fullName);
             user.setAddress(address);
             user.setPhone(phone);
-            dbHelper.updateUser(user);
+            
+            // Update database
+            int result = dbHelper.updateUser(user);
+            
+            // Update session data if successful
+            if (result > 0) {
+                sessionManager.updateUserProfile(fullName, address, phone);
+            }
         }
     }
 } 

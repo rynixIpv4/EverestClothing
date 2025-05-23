@@ -18,7 +18,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "everest_clothing.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Table names
     private static final String TABLE_USERS = "users";
@@ -200,11 +200,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         };
         
         String[] productImages = {
-                "winter_jacket", "denim_jeans", "cotton_tshirt", "formal_shirt",
-                "summer_dress", "sports_shoes", "leather_boots", "woolen_sweater",
-                "silk_scarf", "casual_shorts", "oversized_hoodie", "cargo_pants",
-                "graphic_tee", "streetwear_jacket", "urban_sweatshirt", "baggy_jeans",
-                "puffer_vest", "statement_beanie", "urban_sneakers", "skater_shorts"
+                "urban_puffer_jacket", "distressed_cargo_jeans", "graphic_streetwear_tee", "oversized_button_up",
+                "utility_jumpsuit", "high_top_sneakers", "combat_boots", "vintage_washed_hoodie",
+                "statement_neck_scarf", "skater_shorts", "oversized_hoodie", "tactical_cargo_pants",
+                "urban_art_tee", "color_block_jacket", "graffiti_print_sweatshirt", "baggy_ripped_jeans",
+                "retro_puffer_vest", "beanie_with_patch", "chunky_platform_sneakers", "relaxed_skate_shorts"
         };
         
         String[] productCategories = {

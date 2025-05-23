@@ -26,13 +26,27 @@
         
         <activity android:name=".activities.RegisterActivity" />
         
-        <activity android:name=".activities.ProductDetailActivity" />
+        <activity 
+            android:name=".activities.ProductDetailActivity"
+            android:theme="@style/Theme.EverestClothing.ProductDetail" />
         
         <activity android:name=".activities.CheckoutActivity" />
         
-        <activity android:name=".activities.OrderHistoryActivity" />
+        <activity 
+            android:name=".activities.OrderHistoryActivity" 
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
         
-        <activity android:name=".activities.OrderDetailActivity" />
+        <activity 
+            android:name=".activities.OrderDetailActivity" 
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+        
+        <activity 
+            android:name=".activities.UpdateProfileActivity" 
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+        
+        <activity
+            android:name=".activities.FullScreenImageActivity"
+            android:theme="@style/Theme.EverestClothing.Fullscreen" />
         
     </application>
 

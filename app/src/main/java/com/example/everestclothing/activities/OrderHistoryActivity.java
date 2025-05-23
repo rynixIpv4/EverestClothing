@@ -1,14 +1,19 @@
 package com.example.everestclothing.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,11 +38,23 @@ public class OrderHistoryActivity extends AppCompatActivity implements OrderAdap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Setup proper window decorations
+        setupStatusBar();
+        
         setContentView(R.layout.activity_order_history);
 
         // Initialize helpers
         dbHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
+        
+        // Initialize toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         
         // Initialize views
         recyclerView = findViewById(R.id.recyclerView);
@@ -48,15 +65,34 @@ public class OrderHistoryActivity extends AppCompatActivity implements OrderAdap
         
         // Load orders
         loadOrders();
-        
-        // Set click listener for back button
-        ImageButton backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+    }
+    
+    /**
+     * Set up transparent status bar
+     */
+    private void setupStatusBar() {
+        // Make status bar transparent
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            
+            // Enable edge-to-edge
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+            
+            // Light status bar for visibility
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                WindowInsetsControllerCompat controller = new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+                controller.setAppearanceLightStatusBars(true);
             }
-        });
+            
+            // Make sure we draw behind the status bar
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+    }
+    
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
     
     private void loadOrders() {

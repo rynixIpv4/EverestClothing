@@ -1,10 +1,12 @@
 package com.example.everestclothing.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -12,8 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
 import com.example.everestclothing.R;
 import com.example.everestclothing.database.DatabaseHelper;
 import com.example.everestclothing.models.Product;
@@ -24,6 +26,7 @@ import java.util.Locale;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
+    private static final String TAG = "ProductDetailActivity";
     private ImageView productImage;
     private TextView productName;
     private TextView productPrice;
@@ -32,7 +35,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     private Button decreaseButton;
     private Button increaseButton;
     private Button addToCartButton;
-    private ImageButton backButton;
     private RadioGroup sizeRadioGroup;
     
     private DatabaseHelper dbHelper;
@@ -44,85 +46,135 @@ public class ProductDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Setup transparent status bar - using a simpler approach to avoid crashes
+        setupStatusBar();
+        
         setContentView(R.layout.activity_product_detail);
 
         // Initialize helpers
         dbHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
         
-        // Initialize views
-        productImage = findViewById(R.id.productImage);
-        productName = findViewById(R.id.productName);
-        productPrice = findViewById(R.id.productPrice);
-        productDescription = findViewById(R.id.productDescription);
-        quantityText = findViewById(R.id.quantityText);
-        decreaseButton = findViewById(R.id.decreaseButton);
-        increaseButton = findViewById(R.id.increaseButton);
-        addToCartButton = findViewById(R.id.addToCartButton);
-        backButton = findViewById(R.id.backButton);
-        sizeRadioGroup = findViewById(R.id.sizeRadioGroup);
-        
-        // Get product ID from intent
-        long productId = getIntent().getLongExtra("product_id", -1);
-        
-        if (productId == -1) {
-            Toast.makeText(this, "Product not found", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-        
-        // Load product details
-        product = dbHelper.getProduct(productId);
-        
-        if (product == null) {
-            Toast.makeText(this, "Product not found", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-        
-        // Set product details
-        productName.setText(product.getName());
-        productPrice.setText(String.format(Locale.getDefault(), "$%.2f", product.getPrice()));
-        productDescription.setText(product.getDescription());
-        
-        // Load product image using the new ImageHelper
-        ImageHelper.loadProductImage(this, productImage, product.getImageUrl());
-        
-        // Set up size options
-        setupSizeOptions();
-        
-        // Set click listeners
-        decreaseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (quantity > 1) {
-                    quantity--;
+        try {
+            // Initialize views
+            productImage = findViewById(R.id.productImage);
+            productName = findViewById(R.id.productName);
+            productPrice = findViewById(R.id.productPrice);
+            productDescription = findViewById(R.id.productDescription);
+            quantityText = findViewById(R.id.quantityText);
+            decreaseButton = findViewById(R.id.decreaseButton);
+            increaseButton = findViewById(R.id.increaseButton);
+            addToCartButton = findViewById(R.id.addToCartButton);
+            sizeRadioGroup = findViewById(R.id.sizeRadioGroup);
+            
+            // Get product ID from intent
+            long productId = getIntent().getLongExtra("product_id", -1);
+            
+            if (productId == -1) {
+                Toast.makeText(this, "Product not found", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+            
+            // Load product details
+            product = dbHelper.getProduct(productId);
+            
+            if (product == null) {
+                Toast.makeText(this, "Product not found", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+            
+            // Set product details
+            productName.setText(product.getName());
+            productPrice.setText(String.format(Locale.getDefault(), "$%.2f", product.getPrice()));
+            productDescription.setText(product.getDescription());
+            
+            // Load product image using ImageHelper
+            ImageHelper.loadProductImage(this, productImage, product.getImageUrl());
+            
+            // Set up size options
+            setupSizeOptions();
+            
+            // Set up direct click listeners for buttons
+            decreaseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (quantity > 1) {
+                        quantity--;
+                        quantityText.setText(String.valueOf(quantity));
+                    }
+                }
+            });
+            
+            increaseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    quantity++;
                     quantityText.setText(String.valueOf(quantity));
                 }
+            });
+            
+            addToCartButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addToCart();
+                }
+            });
+            
+            // Set up product image click listener for full-screen view
+            productImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openFullScreenImage();
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onCreate: " + e.getMessage());
+            Toast.makeText(this, "An error occurred. Please try again.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+    
+    /**
+     * Opens the product image in full screen
+     */
+    private void openFullScreenImage() {
+        try {
+            if (product != null) {
+                Intent intent = new Intent(this, FullScreenImageActivity.class);
+                intent.putExtra("image_url", product.getImageUrl());
+                intent.putExtra("product_name", product.getName());
+                startActivity(intent);
             }
-        });
-        
-        increaseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                quantity++;
-                quantityText.setText(String.valueOf(quantity));
+        } catch (Exception e) {
+            Log.e(TAG, "Error opening full screen image: " + e.getMessage());
+            Toast.makeText(this, "Could not open image", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    /**
+     * Setup transparent status bar with a simpler approach to avoid crashes
+     */
+    private void setupStatusBar() {
+        try {
+            // Make status bar transparent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    // For lighter background, use dark status bar icons
+                    View decorView = getWindow().getDecorView();
+                    int flags = decorView.getSystemUiVisibility();
+                    flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                    decorView.setSystemUiVisibility(flags);
+                }
             }
-        });
-        
-        addToCartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToCart();
-            }
-        });
-        
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up status bar: " + e.getMessage());
+        }
     }
     
     private void setupSizeOptions() {

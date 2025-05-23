@@ -21,6 +21,8 @@ public class SessionManager {
     private static final String KEY_USERNAME = "username";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_FULL_NAME = "full_name";
+    private static final String KEY_ADDRESS = "address";
+    private static final String KEY_PHONE = "phone";
 
     // Constructor
     public SessionManager(Context context) {
@@ -47,6 +49,43 @@ public class SessionManager {
     }
 
     /**
+     * Create login session with address and phone
+     */
+    public void createLoginSession(long id, String username, String email, String fullName, String address, String phone) {
+        // Storing login value as TRUE
+        editor.putBoolean(IS_LOGIN, true);
+        
+        // Store user data
+        editor.putLong(KEY_ID, id);
+        editor.putString(KEY_USERNAME, username);
+        editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_FULL_NAME, fullName);
+        editor.putString(KEY_ADDRESS, address);
+        editor.putString(KEY_PHONE, phone);
+        
+        // commit changes
+        editor.commit();
+    }
+
+    /**
+     * Update user profile data
+     */
+    public void updateUserProfile(String fullName) {
+        editor.putString(KEY_FULL_NAME, fullName);
+        editor.commit();
+    }
+    
+    /**
+     * Update user profile data with address and phone
+     */
+    public void updateUserProfile(String fullName, String address, String phone) {
+        editor.putString(KEY_FULL_NAME, fullName);
+        editor.putString(KEY_ADDRESS, address);
+        editor.putString(KEY_PHONE, phone);
+        editor.commit();
+    }
+
+    /**
      * Check login method will check user login status
      * If false it will redirect user to login page
      * Else won't do anything
@@ -61,19 +100,27 @@ public class SessionManager {
     public long getUserId() {
         return pref.getLong(KEY_ID, 0);
     }
-
+    
     public String getUsername() {
-        return pref.getString(KEY_USERNAME, null);
+        return pref.getString(KEY_USERNAME, "");
     }
-
+    
     public String getUserEmail() {
-        return pref.getString(KEY_EMAIL, null);
+        return pref.getString(KEY_EMAIL, "");
     }
-
-    public String getUserFullName() {
-        return pref.getString(KEY_FULL_NAME, null);
+    
+    public String getFullName() {
+        return pref.getString(KEY_FULL_NAME, "");
     }
-
+    
+    public String getUserAddress() {
+        return pref.getString(KEY_ADDRESS, "");
+    }
+    
+    public String getUserPhone() {
+        return pref.getString(KEY_PHONE, "");
+    }
+    
     /**
      * Clear session details
      */

@@ -50,6 +50,9 @@ dependencies {
     // Circle ImageView
     implementation("de.hdodenhof:circleimageview:3.1.0")
     
+    // PhotoView for pinch-to-zoom functionality
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
