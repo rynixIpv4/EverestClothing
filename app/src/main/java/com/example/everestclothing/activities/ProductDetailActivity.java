@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.everestclothing.R;
 import com.example.everestclothing.database.DatabaseHelper;
 import com.example.everestclothing.models.Product;
+import com.example.everestclothing.utils.ImageHelper;
 import com.example.everestclothing.utils.SessionManager;
 
 import java.util.Locale;
@@ -84,20 +85,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         productPrice.setText(String.format(Locale.getDefault(), "$%.2f", product.getPrice()));
         productDescription.setText(product.getDescription());
         
-        // Load product image
-        int imageResId = getResources().getIdentifier(
-                product.getImageUrl(), "drawable", getPackageName());
-        
-        if (imageResId != 0) {
-            Glide.with(this)
-                    .load(imageResId)
-                    .placeholder(android.R.drawable.ic_menu_gallery)
-                    .into(productImage);
-        } else {
-            Glide.with(this)
-                    .load(android.R.drawable.ic_menu_gallery)
-                    .into(productImage);
-        }
+        // Load product image using the new ImageHelper
+        ImageHelper.loadProductImage(this, productImage, product.getImageUrl());
         
         // Set up size options
         setupSizeOptions();

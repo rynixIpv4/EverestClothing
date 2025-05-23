@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.everestclothing.R;
 import com.example.everestclothing.database.DatabaseHelper;
 import com.example.everestclothing.models.CartItem;
+import com.example.everestclothing.utils.ImageHelper;
 
 import java.util.List;
 import java.util.Locale;
@@ -56,20 +57,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.quantityText.setText(String.valueOf(cartItem.getQuantity()));
         holder.subtotalPrice.setText(String.format(Locale.getDefault(), "$%.2f", cartItem.getSubtotal()));
         
-        // Load image using Glide
-        int imageResId = context.getResources().getIdentifier(
-                cartItem.getImageUrl(), "drawable", context.getPackageName());
-        
-        if (imageResId != 0) {
-            Glide.with(context)
-                    .load(imageResId)
-                    .placeholder(android.R.drawable.ic_menu_gallery)
-                    .into(holder.productImage);
-        } else {
-            Glide.with(context)
-                    .load(android.R.drawable.ic_menu_gallery)
-                    .into(holder.productImage);
-        }
+        // Load product image using the ImageHelper
+        ImageHelper.loadProductImage(context, holder.productImage, cartItem.getImageUrl());
         
         // Set click listeners for quantity manipulation
         holder.decreaseButton.setOnClickListener(view -> {

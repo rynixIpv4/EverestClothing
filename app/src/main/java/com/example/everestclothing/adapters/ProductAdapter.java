@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.everestclothing.R;
 import com.example.everestclothing.activities.ProductDetailActivity;
 import com.example.everestclothing.models.Product;
+import com.example.everestclothing.utils.ImageHelper;
 
 import java.util.List;
 import java.util.Locale;
@@ -44,24 +45,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.productPrice.setText(String.format(Locale.getDefault(), "$%.2f", product.getPrice()));
         holder.productCategory.setText(product.getCategory());
         
-        // Load image using Glide
-        // In a real app, you would load from a URL or resource
-        // For this example, we'll use the default android image
-        int imageResId = context.getResources().getIdentifier(
-                product.getImageUrl(), "drawable", context.getPackageName());
-        
-        if (imageResId != 0) {
-            Glide.with(context)
-                    .load(imageResId)
-                    .placeholder(R.drawable.placeholder_image)
-                    .error(R.drawable.error_image)
-                    .centerCrop()
-                    .into(holder.productImage);
-        } else {
-            Glide.with(context)
-                    .load(R.drawable.placeholder_image)
-                    .into(holder.productImage);
-        }
+        // Load product image using the ImageHelper
+        ImageHelper.loadProductImage(context, holder.productImage, product.getImageUrl());
         
         // Set click listener to open product detail
         holder.itemView.setOnClickListener(view -> {
