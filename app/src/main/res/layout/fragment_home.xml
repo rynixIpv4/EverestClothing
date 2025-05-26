@@ -107,7 +107,14 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Accessories" />
+                    android:text="@string/category_accessories" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFootwear"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category_footwear" />
 
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>

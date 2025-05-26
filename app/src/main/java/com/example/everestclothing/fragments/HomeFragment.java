@@ -21,6 +21,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,7 @@ public class HomeFragment extends Fragment {
         categoryMap.put(R.id.chipJeans, "Streetwear");
         categoryMap.put(R.id.chipJackets, "Streetwear");
         categoryMap.put(R.id.chipAccessories, "Accessories");
+        categoryMap.put(R.id.chipFootwear, "Footwear");
         
         ChipGroup chipGroup = view.findViewById(R.id.categoryChipGroup);
         
@@ -93,19 +95,42 @@ public class HomeFragment extends Fragment {
         for (int chipId : categoryMap.keySet()) {
             Chip chip = view.findViewById(chipId);
             chip.setOnClickListener(v -> {
-                // Special logic for streetwear subcategories
-                if (chipId == R.id.chipTshirts) {
-                    loadProductsByNameContaining("Tee");
-                } else if (chipId == R.id.chipHoodies) {
-                    loadProductsByNameContaining("Hoodie|Sweatshirt");
-                } else if (chipId == R.id.chipJeans) {
-                    loadProductsByNameContaining("Jeans|Pants|Shorts");
-                } else if (chipId == R.id.chipJackets) {
-                    loadProductsByNameContaining("Jacket|Vest");
+                String category = categoryMap.get(chipId);
+                List<Product> filteredProducts;
+                
+                if (category.equals("All")) {
+                    filteredProducts = dbHelper.getAllProducts();
+                } else if (category.equals("Streetwear")) {
+                    // Filter streetwear products based on the specific subcategory
+                    String searchPattern = "";
+                    if (chipId == R.id.chipTshirts) {
+                        searchPattern = "Tee|Top";
+                    } else if (chipId == R.id.chipHoodies) {
+                        searchPattern = "Hoodie|Sweatshirt";
+                    } else if (chipId == R.id.chipJeans) {
+                        searchPattern = "Jeans|Pants|Shorts";
+                    } else if (chipId == R.id.chipJackets) {
+                        searchPattern = "Jacket|Vest";
+                    }
+                    
+                    // Get all streetwear products first
+                    List<Product> streetwearProducts = dbHelper.getProductsByCategory("Streetwear");
+                    // Then filter by name pattern
+                    filteredProducts = new ArrayList<>();
+                    for (Product product : streetwearProducts) {
+                        if (product.getName().toLowerCase().matches(".*(" + searchPattern.toLowerCase() + ").*")) {
+                            filteredProducts.add(product);
+                        }
+                    }
                 } else {
-                    // Load products for selected category
-                    loadProducts(categoryMap.get(chipId));
+                    // For non-streetwear categories (Accessories, Footwear)
+                    filteredProducts = dbHelper.getProductsByCategory(category);
                 }
+                
+                // Update the RecyclerView with filtered products
+                adapter = new ProductAdapter(getContext(), filteredProducts);
+                recyclerView.setAdapter(adapter);
+                
                 // Close the drawer after selection
                 drawerLayout.closeDrawer(GravityCompat.START);
             });
