@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +28,7 @@ public class SearchFragment extends Fragment {
     private TextView emptyView;
     private ProductAdapter adapter;
     private DatabaseHelper dbHelper;
+    private CardView searchContainer;
 
     @Nullable
     @Override
@@ -40,6 +42,7 @@ public class SearchFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         searchView = view.findViewById(R.id.searchView);
         emptyView = view.findViewById(R.id.emptyView);
+        searchContainer = view.findViewById(R.id.searchContainer);
         
         // Set up RecyclerView
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -47,6 +50,15 @@ public class SearchFragment extends Fragment {
         // Set up adapter with empty list
         adapter = new ProductAdapter(getContext(), dbHelper.searchProducts(""));
         recyclerView.setAdapter(adapter);
+        
+        // Make the entire search container clickable
+        searchContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.requestFocus();
+                searchView.setIconified(false);  // Expand the SearchView
+            }
+        });
         
         // Set up search listener
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
