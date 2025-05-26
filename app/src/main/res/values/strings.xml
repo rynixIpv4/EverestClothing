@@ -51,6 +51,13 @@
     <string name="size">Size</string>
     <string name="please_select_size">Please select a size</string>
     
+    <!-- GDPR Related -->
+    <string name="gdpr_consent">I agree to the Terms and Conditions and acknowledge the Privacy Policy</string>
+    <string name="view_terms_privacy">View Terms and Conditions | Privacy Policy</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="gdpr_required">Please accept the Terms and Conditions to continue</string>
+    
     <!-- Product Categories -->
     <string name="category_tops">Tops</string>
     <string name="category_bottoms">Bottoms</string>
